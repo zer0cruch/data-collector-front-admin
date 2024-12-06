@@ -54,12 +54,8 @@ function Billing() {
         </SoftBox>
         <SoftBox my={3}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={7}>
-              <BillingInformation />
-            </Grid>
-            <Grid item xs={12} md={5}>
-              <Transactions />
-            </Grid>
+            
+            
           </Grid>
         </SoftBox>
       </SoftBox>

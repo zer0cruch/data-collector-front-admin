@@ -12,7 +12,8 @@ function PaymentMethod() {
   const [formData, setFormData] = useState({
     title: "",
     tags: "",
-    mdfile: "", // Now it's a URL input, not a file input
+    mdFile: "", 
+    preview : ""// Now it's a URL input, not a file input
   });
 
   const handleSetAgreement = () => setAgreement(!agreement);
@@ -28,27 +29,30 @@ function PaymentMethod() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Send the data to the API
-    fetch("http://192.168.190.4:3000/content", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", // Sending JSON data
-      },
-      body: JSON.stringify(formData), // Sending form data as JSON
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // Show API response
-        if (data.message === "Content added successfully") {
-          alert("Content added successfully!");
-          setFormData({ title: "", tags: "", mdfile: "" }); // Reset form data
-        }
-      })
-      .catch((error) => {
-        console.error("Error adding content", error);
-        alert("Error adding content");
-      });
+    const token = localStorage.getItem("authToken"); // Get the token from local storage or wherever it's stored
+
+// Send the data to the API
+fetch("https://data-collect-nu.vercel.app/content", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json", // Sending JSON data
+    "Authorization": `Bearer ${token}`, // Add token to the headers
+  },
+  body: JSON.stringify({...formData, tags: [formData.tags]}), // Sending form data as JSON
+})
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data); // Show API response
+    if (data.message === "Content added successfully") {
+      alert("Content added successfully!");
+      setFormData({ title: "", tags: "", mdFile: "" , preview: "" }); // Reset form data
     }
+  })
+  .catch((error) => {
+    console.error("Error adding content", error);
+    alert("Error adding content");
+  });
+  }
   return (
     <Card id="add-content">
       <SoftBox p={3} mb={1} textAlign="center">
@@ -82,12 +86,22 @@ function PaymentMethod() {
           {/* URL Input for Markdown File (mdfile) */}
           <SoftBox mb={2}>
             <SoftInput
-              name="mdfile"
-              placeholder="Markdown File URL"
-              value={formData.mdfile}
+              name="mdFile"
+              
+              value={formData.mdFile}
               onChange={handleChange}
             />
           </SoftBox>
+          {/* URL Input for Markdown File (mdfile) */}
+          <SoftBox mb={2}>
+            <SoftInput
+              name="preview"
+              
+              value={formData.preview}
+              onChange={handleChange}
+            />
+          </SoftBox>
+
 
           {/* Terms Agreement */}
           <SoftBox display="flex" alignItems="center">
